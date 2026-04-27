@@ -56,7 +56,6 @@ export class KanbanBoardComponent {
       'col-completed'
   );
 
-  /** Which column has the "add task" form open */
   addingTaskInColumn = signal<string | null>(null);
   newTaskTitle = signal('');
   taskTitleError = signal('');
