@@ -1,1 +1,124 @@
-<p>project-list works!</p>
+<div class="project-list-page">
+
+  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <header class="pl-header">
+    <div class="pl-header-inner">
+      <div class="pl-header-brand">
+        <span class="pl-logo-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+        </span>
+        <span class="pl-logo-text">Kanban</span>
+      </div>
+      <div class="pl-header-greeting">
+        <span class="pl-greeting-text">Hello, <strong>{{ userName() }}</strong> 👋</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main Content ────────────────────────────────────────────────── -->
+  <main class="pl-main">
+    <div class="pl-title-row">
+      <div>
+        <h1 class="pl-title">My Projects</h1>
+        <p class="pl-subtitle text-muted">
+          {{ projects().length === 0 ? 'No projects yet — create your first one.' : projects().length + ' project' + (projects().length === 1 ? '' : 's') }}
+        </p>
+      </div>
+      <button
+        id="new-project-toggle-btn"
+        class="btn btn-primary"
+        (click)="toggleNewProjectForm()"
+      >
+        @if (showNewProjectForm()) {
+          ✕ Cancel
+        } @else {
+          + New Project
+        }
+      </button>
+    </div>
+
+    <!-- ── New Project Form ──────────────────────────────────────────── -->
+    @if (showNewProjectForm()) {
+      <div class="pl-new-project-card card" id="new-project-form">
+        <h2 class="pl-form-title">New Project</h2>
+        <div class="pl-form-row">
+          <input
+            id="new-project-name-input"
+            class="input"
+            type="text"
+            placeholder="Project name..."
+            autocomplete="off"
+            [value]="newProjectName()"
+            (input)="onProjectNameInput($event)"
+            (keydown)="onProjectNameKeydown($event)"
+            autofocus
+          />
+          <button
+            id="create-project-btn"
+            class="btn btn-primary"
+            (click)="createProject()"
+            [disabled]="!newProjectName().trim()"
+          >
+            Create →
+          </button>
+        </div>
+        @if (nameError()) {
+          <p class="pl-form-error" role="alert">{{ nameError() }}</p>
+        }
+        <p class="text-muted text-small" style="margin-top: 6px;">Press <kbd>Enter</kbd> to create · <kbd>Esc</kbd> to cancel</p>
+      </div>
+    }
+
+    <!-- ── Project Grid ──────────────────────────────────────────────── -->
+    @if (sortedProjects().length > 0) {
+      <div class="pl-grid">
+        @for (project of sortedProjects(); track project.id) {
+          <button
+            class="pl-project-card card"
+            [id]="'project-card-' + project.id"
+            (click)="openProject(project.id)"
+            (keydown.enter)="openProject(project.id)"
+          >
+            <div class="pl-card-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <div class="pl-card-body">
+              <h2 class="pl-card-name">{{ project.name }}</h2>
+              <div class="pl-card-meta">
+                <span class="badge">{{ project.tasks.length }} task{{ project.tasks.length === 1 ? '' : 's' }}</span>
+                <span class="badge">{{ project.columns.length }} column{{ project.columns.length === 1 ? '' : 's' }}</span>
+              </div>
+            </div>
+            <div class="pl-card-arrow" aria-hidden="true">→</div>
+          </button>
+        }
+      </div>
+    } @else if (!showNewProjectForm()) {
+      <!-- Empty state -->
+      <div class="pl-empty">
+        <div class="pl-empty-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <line x1="14" y1="17.5" x2="21" y2="17.5" />
+            <line x1="17.5" y1="14" x2="17.5" y2="21" />
+          </svg>
+        </div>
+        <p class="pl-empty-text">Create your first project to get started.</p>
+        <button class="btn btn-primary" (click)="toggleNewProjectForm()">+ New Project</button>
+      </div>
+    }
+  </main>
+
+</div>

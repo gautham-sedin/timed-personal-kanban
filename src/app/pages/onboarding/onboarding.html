@@ -1,1 +1,47 @@
-<p>onboarding works!</p>
+<div class="onboarding-wrapper">
+  <div class="onboarding-card">
+    <!-- Logo / Icon -->
+    <div class="onboarding-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    </div>
+
+    <h1 class="onboarding-title">Welcome to Kanban</h1>
+    <p class="onboarding-subtitle">
+      Your personal workspace for focused, timed tasks.<br>
+      Let's start with your name.
+    </p>
+
+    <div class="onboarding-form">
+      <label class="onboarding-label" for="user-name-input">What should we call you?</label>
+      <input
+        id="user-name-input"
+        class="input onboarding-input"
+        type="text"
+        placeholder="e.g. Alex"
+        autocomplete="off"
+        [value]="name()"
+        (input)="onNameInput($event)"
+        (keydown)="onKeydown($event)"
+      />
+      @if (error()) {
+        <p class="onboarding-error" role="alert">{{ error() }}</p>
+      }
+      <button
+        id="onboarding-submit-btn"
+        class="btn btn-primary onboarding-btn"
+        (click)="onSubmit()"
+        [disabled]="!name().trim()"
+      >
+        Get Started →
+      </button>
+    </div>
+
+    <p class="onboarding-note">Your name is stored locally and never sent anywhere.</p>
+  </div>
+</div>
