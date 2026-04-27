@@ -1,6 +1,5 @@
 <div class="onboarding-wrapper">
   <div class="onboarding-card">
-    <!-- Logo / Icon -->
     <div class="onboarding-icon" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -19,25 +18,13 @@
 
     <div class="onboarding-form">
       <label class="onboarding-label" for="user-name-input">What should we call you?</label>
-      <input
-        id="user-name-input"
-        class="input onboarding-input"
-        type="text"
-        placeholder="e.g. Alex"
-        autocomplete="off"
-        [value]="name()"
-        (input)="onNameInput($event)"
-        (keydown)="onKeydown($event)"
-      />
+      <input id="user-name-input" class="input onboarding-input" type="text" placeholder="e.g. Alex" autocomplete="off"
+        [value]="name()" (input)="onNameInput($event)" (keydown)="onKeydown($event)" />
       @if (error()) {
-        <p class="onboarding-error" role="alert">{{ error() }}</p>
+      <p class="onboarding-error" role="alert">{{ error() }}</p>
       }
-      <button
-        id="onboarding-submit-btn"
-        class="btn btn-primary onboarding-btn"
-        (click)="onSubmit()"
-        [disabled]="!name().trim()"
-      >
+      <button id="onboarding-submit-btn" class="btn btn-primary onboarding-btn" (click)="onSubmit()"
+        [disabled]="!name().trim()">
         Get Started →
       </button>
     </div>

@@ -3,12 +3,11 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class StorageService {
-  // Inject the platform ID to check if we are in a browser or on a server
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
   save<T>(key: string, value: T): void {
-    if (!this.isBrowser) return; // Exit if running on the server
+    if (!this.isBrowser) return;
 
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -18,7 +17,7 @@ export class StorageService {
   }
 
   load<T>(key: string): T | null {
-    if (!this.isBrowser) return null; // Exit if running on the server
+    if (!this.isBrowser) return null;
 
     try {
       const raw = localStorage.getItem(key);

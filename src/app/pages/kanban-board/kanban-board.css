@@ -12,7 +12,7 @@
   flex-shrink: 0;
   z-index: 10;
 }
- 
+
 .kb-header-inner {
   padding: 0 20px;
   height: 52px;
@@ -20,11 +20,11 @@
   align-items: center;
   gap: 12px;
 }
- 
+
 .kb-back-btn {
   flex-shrink: 0;
 }
- 
+
 .kb-project-name {
   flex: 1;
   font-size: 15px;
@@ -36,14 +36,14 @@
   text-overflow: ellipsis;
   letter-spacing: -0.3px;
 }
- 
+
 .kb-board-wrapper {
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 20px;
 }
- 
+
 .kb-board {
   display: flex;
   gap: 14px;
@@ -64,17 +64,17 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
- 
+
 .kb-col-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 12px 10px 12px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
   flex-shrink: 0;
 }
- 
+
 .kb-col-title {
   flex: 1;
   font-size: 13px;
@@ -84,19 +84,23 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
- 
+
 .kb-col-count {
   flex-shrink: 0;
 }
- 
+
 .kb-col-delete-btn {
   flex-shrink: 0;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, color 0.15s;
 }
- 
+
 .kb-column:hover .kb-col-delete-btn {
   opacity: 1;
+}
+
+.kb-col-delete-btn:hover {
+  color: var(--color-danger) !important;
 }
 
 .kb-drop-zone {
@@ -107,12 +111,11 @@
   flex-direction: column;
   gap: 6px;
   min-height: 80px;
+  transition: background 0.15s;
 }
- 
 
 .kb-drop-zone.cdk-drop-list-receiving {
-  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
 }
 
 .kb-add-task-btn {
@@ -128,33 +131,111 @@
   transition: background 0.15s, color 0.15s;
   text-align: left;
 }
- 
+
 .kb-add-task-btn:hover {
   background: var(--color-border);
   color: var(--color-text);
 }
- 
+
 .kb-add-task-form {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 4px 0;
+  padding: 2px 0;
 }
- 
+
 .kb-task-input {
   font-size: 13px;
   padding: 7px 10px;
 }
- 
+
 .kb-task-error {
   font-size: 11px;
   color: var(--color-danger);
   margin: -2px 0 0;
 }
- 
+
 .kb-add-task-actions {
   display: flex;
   gap: 6px;
+}
+
+.kb-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.kb-dialog {
+  width: 100%;
+  max-width: 380px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: slideUp 0.15s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kb-dialog-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kb-dialog-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.kb-dialog-body {
+  font-size: 13px;
+  margin: -4px 0 0;
+}
+
+.kb-migrate-select {
+  font-size: 13px;
+}
+
+.kb-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .kb-not-found {

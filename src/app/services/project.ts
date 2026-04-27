@@ -6,23 +6,18 @@ import { StorageService } from './storage';
 export class ProjectService {
   private storage = inject(StorageService);
 
-  // ─── State ──────────────────────────────────────────────────────────────────
   projects = signal<Project[]>([]);
   userName = signal<string | null>(null);
 
-  // ─── Derived ────────────────────────────────────────────────────────────────
   isOnboarded = computed(() => !!this.userName());
 
-  // ─── Init ───────────────────────────────────────────────────────────────────
   constructor() {
-    // Load persisted state on startup
     const savedProjects = this.storage.load<Project[]>(STORAGE_KEYS.PROJECTS);
     const savedName = this.storage.load<string>(STORAGE_KEYS.USER_NAME);
 
     if (savedProjects) this.projects.set(savedProjects);
     if (savedName) this.userName.set(savedName);
 
-    // Auto-save whenever signals change
     effect(() => {
       this.storage.save(STORAGE_KEYS.PROJECTS, this.projects());
     });
@@ -86,7 +81,6 @@ export class ProjectService {
   addColumn(projectId: string, name: string): void {
     this._updateProject(projectId, p => {
       const maxOrder = Math.max(...p.columns.map(c => c.order), 0);
-      // Insert before 'completed' (last locked column)
       const completedOrder = p.columns.find(c => c.name === 'Completed')?.order ?? maxOrder;
       const newCol: Column = {
         id: crypto.randomUUID(),
@@ -101,22 +95,23 @@ export class ProjectService {
     });
   }
 
-  deleteColumn(projectId: string, columnId: string): void {
+  deleteColumn(projectId: string, columnId: string, targetColumnId?: string): void {
     const project = this.getProject(projectId);
     if (!project) return;
 
     const col = project.columns.find(c => c.id === columnId);
-    if (!col || col.locked) return; // Cannot delete locked columns
+    if (!col || col.locked) return;
 
-    // Move tasks from deleted column to 'todo'
-    const todoCol = project.columns.find(c => c.id === 'col-todo');
-    if (!todoCol) return;
+    const fallback = project.columns.find(c => c.id === 'col-todo');
+    const target = project.columns.find(c => c.id === (targetColumnId ?? 'col-todo'))
+      ?? fallback;
+    if (!target) return;
 
     this._updateProject(projectId, p => ({
       ...p,
       columns: p.columns.filter(c => c.id !== columnId),
       tasks: p.tasks.map(t =>
-        t.columnId === columnId ? { ...t, columnId: todoCol.id } : t
+        t.columnId === columnId ? { ...t, columnId: target.id } : t
       ),
     }));
   }

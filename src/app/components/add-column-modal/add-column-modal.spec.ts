@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddColumnModal } from './add-column-modal';
+import { AddColumnModalComponent } from './add-column-modal';
 
 describe('AddColumnModal', () => {
-  let component: AddColumnModal;
-  let fixture: ComponentFixture<AddColumnModal>;
+  let component: AddColumnModalComponent;
+  let fixture: ComponentFixture<AddColumnModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddColumnModal],
+      imports: [AddColumnModalComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddColumnModal);
+    fixture = TestBed.createComponent(AddColumnModalComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

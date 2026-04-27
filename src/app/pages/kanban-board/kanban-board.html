@@ -1,125 +1,120 @@
 @if (project(); as p) {
 
-  <header class="kb-header">
-    <div class="kb-header-inner">
-      <button class="btn btn-ghost btn-sm kb-back-btn" (click)="goBack()" id="back-to-projects-btn">
-        ← Projects
-      </button>
-      <h1 class="kb-project-name">{{ p.name }}</h1>
-      <button
-        class="btn btn-primary btn-sm"
-        id="add-column-btn"
-        (click)="showAddColumnModal.set(true)"
-      >
-        + Add Column
-      </button>
-    </div>
-  </header>
+<header class="kb-header">
+  <div class="kb-header-inner">
+    <button class="btn btn-ghost btn-sm kb-back-btn" id="back-to-projects-btn" (click)="goBack()">
+      ← Projects
+    </button>
+    <h1 class="kb-project-name">{{ p.name }}</h1>
+    <button class="btn btn-primary btn-sm" id="add-column-btn" (click)="showAddColumnModal.set(true)">
+      + Add Column
+    </button>
+  </div>
+</header>
 
-  <div class="kb-board-wrapper">
-    <div class="kb-board" cdkDropListGroup>
- 
-      @for (entry of columnsWithTasks(); track entry.column.id) {
-        <div class="kb-column">
- 
-          <!-- Column header -->
-          <div class="kb-col-header">
-            <span class="kb-col-title">{{ entry.column.name }}</span>
-            <span class="kb-col-count badge">{{ entry.tasks.length }}</span>
-            @if (!entry.column.locked) {
-              <button
-                class="btn-icon kb-col-delete-btn"
-                [id]="'delete-col-' + entry.column.id"
-                aria-label="Delete column"
-                title="Delete column (tasks move to Todo)"
-                (click)="deleteColumn(entry.column.id)"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                  <path d="M10 11v6M14 11v6" />
-                </svg>
-              </button>
-            }
-          </div>
+<div class="kb-board-wrapper">
+  <div class="kb-board" cdkDropListGroup>
 
-          <div
-            class="kb-drop-zone"
-            cdkDropList
-            [id]="entry.column.id"
-            [cdkDropListData]="entry.tasks"
-            (cdkDropListDropped)="onDrop($event, entry.column)"
-          >
-            @for (task of entry.tasks; track task.id) {
-              <app-task-card
-                [task]="task"
-                [columns]="allColumns()"
-                [completedColumnId]="completedColumnId()"
-                (deleted)="deleteTask(task.id)"
-              />
-            }
- 
-            @if (addingTaskInColumn() === entry.column.id) {
-              <div class="kb-add-task-form">
-                <input
-                  class="input kb-task-input"
-                  type="text"
-                  placeholder="Task title..."
-                  autocomplete="off"
-                  [id]="'task-input-' + entry.column.id"
-                  [value]="newTaskTitle()"
-                  (input)="onTaskTitleInput($event)"
-                  (keydown)="onTaskTitleKeydown($event, entry.column.id)"
-                  autofocus
-                />
-                @if (taskTitleError()) {
-                  <p class="kb-task-error" role="alert">{{ taskTitleError() }}</p>
-                }
-                <div class="kb-add-task-actions">
-                  <button class="btn btn-primary btn-sm"
-                    [id]="'confirm-add-task-' + entry.column.id"
-                    [disabled]="!newTaskTitle().trim()"
-                    (click)="confirmAddTask(entry.column.id)">
-                    Add
-                  </button>
-                  <button class="btn btn-ghost btn-sm"
-                    [id]="'cancel-add-task-' + entry.column.id"
-                    (click)="cancelAddTask()">
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            } @else {
-              <button
-                class="kb-add-task-btn"
-                [id]="'open-add-task-' + entry.column.id"
-                (click)="openAddTask(entry.column.id)"
-              >
-                + Add task
-              </button>
-            }
+    @for (entry of columnsWithTasks(); track entry.column.id) {
+    <div class="kb-column">
+
+      <div class="kb-col-header">
+        <span class="kb-col-title">{{ entry.column.name }}</span>
+        <span class="kb-col-count badge">{{ entry.tasks.length }}</span>
+        @if (!entry.column.locked) {
+        <button class="btn-icon kb-col-delete-btn" [id]="'delete-col-' + entry.column.id" aria-label="Delete column"
+          title="Delete column" (click)="requestDeleteColumn(entry.column)">
+
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            <path d="M10 11v6M14 11v6" />
+          </svg>
+        </button>
+        }
+      </div>
+
+      <div class="kb-drop-zone" cdkDropList [id]="entry.column.id" [cdkDropListData]="entry.tasks"
+        (cdkDropListDropped)="onDrop($event, entry.column)">
+        @for (task of entry.tasks; track task.id) {
+        <app-task-card [task]="task" [columns]="allColumns()" [completedColumnId]="completedColumnId()"
+          (deleted)="deleteTask(task.id)" />
+        }
+
+        @if (addingTaskInColumn() === entry.column.id) {
+        <div class="kb-add-task-form">
+          <input class="input kb-task-input" type="text" placeholder="Task title..." autocomplete="off"
+            [id]="'task-input-' + entry.column.id" [value]="newTaskTitle()" (input)="onTaskTitleInput($event)"
+            (keydown)="onTaskTitleKeydown($event, entry.column.id)" autofocus />
+          @if (taskTitleError()) {
+          <p class="kb-task-error" role="alert">{{ taskTitleError() }}</p>
+          }
+          <div class="kb-add-task-actions">
+            <button class="btn btn-primary btn-sm" [id]="'confirm-add-task-' + entry.column.id"
+              [disabled]="!newTaskTitle().trim()" (click)="confirmAddTask(entry.column.id)">Add</button>
+            <button class="btn btn-ghost btn-sm" [id]="'cancel-add-task-' + entry.column.id"
+              (click)="cancelAddTask()">Cancel</button>
           </div>
- 
         </div>
-      }
- 
+        } @else {
+        <button class="kb-add-task-btn" [id]="'open-add-task-' + entry.column.id"
+          (click)="openAddTask(entry.column.id)">
+          + Add task
+        </button>
+        }
+      </div>
+
     </div>
-  </div>
+    }
 
-  @if (showAddColumnModal()) {
-    <app-add-column-modal
-      (columnAdded)="onColumnAdded($event)"
-      (cancelled)="showAddColumnModal.set(false)"
-    />
-  }
- 
-} @else {
-
-  <div class="kb-not-found">
-    <p>Project not found.</p>
-    <button class="btn btn-primary" (click)="goBack()">← Back to Projects</button>
   </div>
+</div>
+
+@if (showAddColumnModal()) {
+<app-add-column-modal (columnAdded)="onColumnAdded($event)" (cancelled)="showAddColumnModal.set(false)" />
 }
- 
+
+@if (pendingDeleteColumn(); as col) {
+<div class="kb-dialog-overlay" (click)="cancelDeleteColumn()" role="dialog" aria-modal="true">
+  <div class="kb-dialog card" (click)="$event.stopPropagation()">
+
+    <div class="kb-dialog-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+        <path d="M10 11v6M14 11v6" />
+      </svg>
+    </div>
+    <h2 class="kb-dialog-title">Delete "{{ col.name }}"?</h2>
+    <p class="kb-dialog-body text-muted">
+      This column has tasks. Move them to:
+    </p>
+
+    <select class="input kb-migrate-select" id="migrate-target-select" [value]="migrateToColumnId()"
+      (change)="onMigrateTargetChange($event)">
+      @for (c of migrationTargetColumns(); track c.id) {
+      <option [value]="c.id">{{ c.name }}</option>
+      }
+    </select>
+
+    <div class="kb-dialog-actions">
+      <button class="btn btn-ghost btn-sm" id="cancel-delete-col-btn" (click)="cancelDeleteColumn()">
+        Keep Column
+      </button>
+      <button class="btn btn-danger btn-sm" id="confirm-delete-col-btn" (click)="confirmDeleteColumn()">
+        Delete &amp; Move Tasks
+      </button>
+    </div>
+
+  </div>
+</div>
+}
+
+} @else {
+<div class="kb-not-found">
+  <p>Project not found.</p>
+  <button class="btn btn-primary" (click)="goBack()">← Back to Projects</button>
+</div>
+}

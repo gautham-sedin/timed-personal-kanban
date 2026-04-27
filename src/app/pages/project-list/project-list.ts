@@ -12,7 +12,6 @@ export class ProjectListComponent {
   private projectService = inject(ProjectService);
   private router = inject(Router);
 
-  // ─── State ────────────────────────────────────────────────────────────────
   projects = this.projectService.projects;
   userName = this.projectService.userName;
 
@@ -20,12 +19,10 @@ export class ProjectListComponent {
   showNewProjectForm = signal(false);
   nameError = signal('');
 
-  // ─── Derived ──────────────────────────────────────────────────────────────
   sortedProjects = computed(() =>
     [...this.projects()].sort((a, b) => b.createdAt - a.createdAt)
   );
 
-  // ─── Actions ──────────────────────────────────────────────────────────────
   openProject(id: string): void {
     this.router.navigate(['/board', id]);
   }

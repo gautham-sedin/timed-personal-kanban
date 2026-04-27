@@ -14,10 +14,6 @@ export class TaskStatsComponent {
 
   private timer = inject(TimerService);
 
-  /**
-   * Returns only columns that the task actually spent time in,
-   * ordered by column order, with the formatted time.
-   */
   entries = computed(() =>
     this.columns
       .filter(c => (this.task.timeLog[c.id]?.totalMs ?? 0) > 0)
