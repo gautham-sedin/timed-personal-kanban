@@ -1,0 +1,77 @@
+.task-card {
+  padding: 10px 10px 10px 8px;
+  cursor: grab;
+  user-select: none;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  position: relative;
+}
+ 
+.task-card:hover {
+  border-color: var(--color-border-dark);
+  box-shadow: var(--shadow-md);
+}
+ 
+.task-card:active {
+  cursor: grabbing;
+}
+ 
+/* ── Header row: drag-handle | title | delete ─── */
+.task-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+ 
+.task-drag-handle {
+  color: var(--color-border-dark);
+  cursor: grab;
+  flex-shrink: 0;
+  padding-top: 1px;
+  transition: color 0.15s;
+  display: flex;
+  align-items: flex-start;
+}
+ 
+.task-card:hover .task-drag-handle {
+  color: var(--color-text-muted);
+}
+ 
+.task-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.4;
+  word-break: break-word;
+}
+ 
+.task-delete-btn {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  padding: 3px;
+  margin-top: -1px;
+}
+ 
+.task-card:hover .task-delete-btn {
+  opacity: 1;
+}
+ 
+.task-delete-btn:hover {
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent) !important;
+  color: var(--color-danger) !important;
+}
+ 
+/* ── Drag states ────────────────────────────────── */
+.task-card-placeholder {
+  min-height: 44px;
+  background: var(--color-border);
+  border: 2px dashed var(--color-border-dark);
+  border-radius: var(--radius-md);
+  opacity: 0.5;
+}
+ 
+.cdk-drag-preview.task-card {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  rotate: 1.5deg;
+}

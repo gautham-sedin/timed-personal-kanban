@@ -1,1 +1,39 @@
-<p>add-column-modal works!</p>
+<div class="acm-overlay" (click)="cancelled.emit()" role="dialog" aria-modal="true" aria-label="Add column">
+  <div class="acm-panel card" (click)="$event.stopPropagation()">
+    <h2 class="acm-title">Add Column</h2>
+ 
+    <input
+      id="add-column-name-input"
+      class="input"
+      type="text"
+      placeholder="Column name..."
+      autocomplete="off"
+      [value]="columnName()"
+      (input)="onInput($event)"
+      (keydown)="onKeydown($event)"
+      autofocus
+    />
+ 
+    @if (error()) {
+      <p class="acm-error" role="alert">{{ error() }}</p>
+    }
+ 
+    <p class="acm-hint text-muted text-small">
+      Press <kbd>Enter</kbd> to add · <kbd>Esc</kbd> or click outside to cancel
+    </p>
+ 
+    <div class="acm-actions">
+      <button
+        class="btn btn-ghost btn-sm"
+        id="add-column-cancel-btn"
+        (click)="cancelled.emit()"
+      >Cancel</button>
+      <button
+        class="btn btn-primary btn-sm"
+        id="add-column-submit-btn"
+        [disabled]="!columnName().trim()"
+        (click)="submit()"
+      >Add Column</button>
+    </div>
+  </div>
+</div>
