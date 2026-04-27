@@ -23,7 +23,6 @@ export class TaskCardComponent {
   @Input() completedColumnId = 'col-completed';
   @Output() deleted = new EventEmitter<void>();
  
-  /** True when the task lives in the Completed column */
   isCompleted = computed(() => this.task.columnId === this.completedColumnId);
  
   onDelete(event: MouseEvent): void {

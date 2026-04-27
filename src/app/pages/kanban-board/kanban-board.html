@@ -1,6 +1,5 @@
 @if (project(); as p) {
- 
-  <!-- ── Header ────────────────────────────────────────────────────── -->
+
   <header class="kb-header">
     <div class="kb-header-inner">
       <button class="btn btn-ghost btn-sm kb-back-btn" (click)="goBack()" id="back-to-projects-btn">
@@ -16,8 +15,7 @@
       </button>
     </div>
   </header>
- 
-  <!-- ── Board ─────────────────────────────────────────────────────── -->
+
   <div class="kb-board-wrapper">
     <div class="kb-board" cdkDropListGroup>
  
@@ -46,8 +44,7 @@
               </button>
             }
           </div>
- 
-          <!-- Drop zone -->
+
           <div
             class="kb-drop-zone"
             cdkDropList
@@ -64,7 +61,6 @@
               />
             }
  
-            <!-- Add-task inline form -->
             @if (addingTaskInColumn() === entry.column.id) {
               <div class="kb-add-task-form">
                 <input
@@ -111,8 +107,7 @@
  
     </div>
   </div>
- 
-  <!-- ── Add Column Modal ───────────────────────────────────────────── -->
+
   @if (showAddColumnModal()) {
     <app-add-column-modal
       (columnAdded)="onColumnAdded($event)"
@@ -121,9 +116,10 @@
   }
  
 } @else {
-  <!-- Project not found -->
+
   <div class="kb-not-found">
     <p>Project not found.</p>
     <button class="btn btn-primary" (click)="goBack()">← Back to Projects</button>
   </div>
 }
+ 

@@ -1,5 +1,4 @@
 <div class="task-card card" cdkDrag [cdkDragData]="task">
-  <!-- Drag handle area -->
   <div class="task-card-header">
     <span class="task-drag-handle" cdkDragHandle aria-label="Drag task" title="Drag to move">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -30,12 +29,10 @@
       </svg>
     </button>
   </div>
- 
-  <!-- Completed stats (Person A's component) -->
+
   @if (isCompleted()) {
     <app-task-stats [task]="task" [columns]="columns" />
   }
- 
-  <!-- Drag preview clone -->
+
   <div *cdkDragPlaceholder class="task-card-placeholder"></div>
 </div>

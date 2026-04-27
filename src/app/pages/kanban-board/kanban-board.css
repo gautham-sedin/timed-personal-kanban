@@ -4,8 +4,7 @@
   height: 100vh;
   overflow: hidden;
 }
- 
-/* ── Header ──────────────────────────────────────────────────────────── */
+
 .kb-header {
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -38,7 +37,6 @@
   letter-spacing: -0.3px;
 }
  
-/* ── Board Wrapper — horizontal scroll ───────────────────────────────── */
 .kb-board-wrapper {
   flex: 1;
   overflow-x: auto;
@@ -51,12 +49,10 @@
   gap: 14px;
   height: 100%;
   align-items: flex-start;
-  /* Ensure columns don't shrink below their min width */
   width: max-content;
   min-width: 100%;
 }
- 
-/* ── Column ──────────────────────────────────────────────────────────── */
+
 .kb-column {
   width: 240px;
   flex-shrink: 0;
@@ -102,8 +98,7 @@
 .kb-column:hover .kb-col-delete-btn {
   opacity: 1;
 }
- 
-/* ── Drop Zone ───────────────────────────────────────────────────────── */
+
 .kb-drop-zone {
   flex: 1;
   overflow-y: auto;
@@ -111,17 +106,15 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  /* CDK needs min-height so empty columns are still droppable */
   min-height: 80px;
 }
  
-/* CDK drag-over highlight */
+
 .kb-drop-zone.cdk-drop-list-receiving {
   background: color-mix(in srgb, var(--color-primary) 5%, transparent);
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
- 
-/* ── Add Task ────────────────────────────────────────────────────────── */
+
 .kb-add-task-btn {
   all: unset;
   display: block;
@@ -163,8 +156,7 @@
   display: flex;
   gap: 6px;
 }
- 
-/* ── Not Found ───────────────────────────────────────────────────────── */
+
 .kb-not-found {
   display: flex;
   flex-direction: column;

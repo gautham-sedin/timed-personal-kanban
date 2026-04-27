@@ -29,7 +29,6 @@ export class KanbanBoardComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
  
-  // ─── Derived state ──────────────────────────────────────────────────
   private projectId = computed(() =>
     this.route.snapshot.paramMap.get('projectId') ?? ''
   );
@@ -38,7 +37,6 @@ export class KanbanBoardComponent {
     this.projectService.getProject(this.projectId())
   );
  
-  /** Columns sorted by order, each with its filtered tasks */
   columnsWithTasks = computed(() => {
     const p = this.project();
     if (!p) return [];
@@ -57,29 +55,25 @@ export class KanbanBoardComponent {
       this.project()?.columns.find(c => c.id === 'col-completed')?.id ??
       'col-completed'
   );
- 
-  // ─── Add-task inline form per column ────────────────────────────────
-  /** Which column has the "add task" form open */
+
   addingTaskInColumn = signal<string | null>(null);
   newTaskTitle = signal('');
   taskTitleError = signal('');
  
-  // ─── Add-column modal ───────────────────────────────────────────────
+
   showAddColumnModal = signal(false);
  
-  // ─── Navigation ─────────────────────────────────────────────────────
   goBack(): void {
     this.router.navigate(['/projects']);
   }
  
-  // ─── Drag & Drop — THE integration point with Person A ──────────────
+ 
   onDrop(event: CdkDragDrop<Task[]>, toColumn: Column): void {
     if (event.previousContainer === event.container) return;
  
     const task = event.item.data as Task;
     const fromColumnId = event.previousContainer.id;
  
-    // Person A's timer service handles time accounting
     const updatedTask = this.timerService.recordMove(
       task,
       fromColumnId,
@@ -88,8 +82,7 @@ export class KanbanBoardComponent {
  
     this.projectService.moveTask(this.projectId(), updatedTask);
   }
- 
-  // ─── Add Task ───────────────────────────────────────────────────────
+
   openAddTask(columnId: string): void {
     this.addingTaskInColumn.set(columnId);
     this.newTaskTitle.set('');
@@ -121,19 +114,17 @@ export class KanbanBoardComponent {
     this.projectService.addTask(this.projectId(), columnId, trimmed);
     this.cancelAddTask();
   }
- 
-  // ─── Delete Task ────────────────────────────────────────────────────
+
   deleteTask(taskId: string): void {
     this.projectService.deleteTask(this.projectId(), taskId);
   }
  
-  // ─── Add Column ─────────────────────────────────────────────────────
+
   onColumnAdded(name: string): void {
     this.projectService.addColumn(this.projectId(), name);
     this.showAddColumnModal.set(false);
   }
  
-  // ─── Delete Column ──────────────────────────────────────────────────
   deleteColumn(columnId: string): void {
     this.projectService.deleteColumn(this.projectId(), columnId);
   }
