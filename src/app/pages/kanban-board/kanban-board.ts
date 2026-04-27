@@ -1,9 +1,140 @@
-import { Component } from '@angular/core';
-
+import { Component, inject, computed, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  CdkDropList,
+  CdkDropListGroup,
+  CdkDragDrop,
+} from '@angular/cdk/drag-drop';
+import { Column, Task } from '../../models';
+import { ProjectService } from '../../services/project';
+import { TimerService } from '../../services/timer';
+import { TaskCardComponent } from '../../components/task-card/task-card';
+import { AddColumnModalComponent } from '../../components/add-column-modal/add-column-modal';
+ 
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  template: `<p>Kanban board — Person B will implement this</p>`,
-  styles: []
+  imports: [
+    CdkDropListGroup,
+    CdkDropList,
+    TaskCardComponent,
+    AddColumnModalComponent,
+  ],
+  templateUrl: './kanban-board.html',
+  styleUrl: './kanban-board.css',
 })
-export class KanbanBoardComponent { }
+export class KanbanBoardComponent {
+  private projectService = inject(ProjectService);
+  private timerService = inject(TimerService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+ 
+  // ─── Derived state ──────────────────────────────────────────────────
+  private projectId = computed(() =>
+    this.route.snapshot.paramMap.get('projectId') ?? ''
+  );
+ 
+  project = computed(() =>
+    this.projectService.getProject(this.projectId())
+  );
+ 
+  /** Columns sorted by order, each with its filtered tasks */
+  columnsWithTasks = computed(() => {
+    const p = this.project();
+    if (!p) return [];
+    return [...p.columns]
+      .sort((a, b) => a.order - b.order)
+      .map(col => ({
+        column: col,
+        tasks: p.tasks.filter(t => t.columnId === col.id),
+      }));
+  });
+ 
+  allColumns = computed(() => this.project()?.columns ?? []);
+ 
+  completedColumnId = computed(
+    () =>
+      this.project()?.columns.find(c => c.id === 'col-completed')?.id ??
+      'col-completed'
+  );
+ 
+  // ─── Add-task inline form per column ────────────────────────────────
+  /** Which column has the "add task" form open */
+  addingTaskInColumn = signal<string | null>(null);
+  newTaskTitle = signal('');
+  taskTitleError = signal('');
+ 
+  // ─── Add-column modal ───────────────────────────────────────────────
+  showAddColumnModal = signal(false);
+ 
+  // ─── Navigation ─────────────────────────────────────────────────────
+  goBack(): void {
+    this.router.navigate(['/projects']);
+  }
+ 
+  // ─── Drag & Drop — THE integration point with Person A ──────────────
+  onDrop(event: CdkDragDrop<Task[]>, toColumn: Column): void {
+    if (event.previousContainer === event.container) return;
+ 
+    const task = event.item.data as Task;
+    const fromColumnId = event.previousContainer.id;
+ 
+    // Person A's timer service handles time accounting
+    const updatedTask = this.timerService.recordMove(
+      task,
+      fromColumnId,
+      toColumn.id
+    );
+ 
+    this.projectService.moveTask(this.projectId(), updatedTask);
+  }
+ 
+  // ─── Add Task ───────────────────────────────────────────────────────
+  openAddTask(columnId: string): void {
+    this.addingTaskInColumn.set(columnId);
+    this.newTaskTitle.set('');
+    this.taskTitleError.set('');
+  }
+ 
+  cancelAddTask(): void {
+    this.addingTaskInColumn.set(null);
+    this.newTaskTitle.set('');
+    this.taskTitleError.set('');
+  }
+ 
+  onTaskTitleInput(event: Event): void {
+    this.newTaskTitle.set((event.target as HTMLInputElement).value);
+    if (this.taskTitleError()) this.taskTitleError.set('');
+  }
+ 
+  onTaskTitleKeydown(event: KeyboardEvent, columnId: string): void {
+    if (event.key === 'Enter') this.confirmAddTask(columnId);
+    if (event.key === 'Escape') this.cancelAddTask();
+  }
+ 
+  confirmAddTask(columnId: string): void {
+    const trimmed = this.newTaskTitle().trim();
+    if (!trimmed) {
+      this.taskTitleError.set('Task title cannot be empty.');
+      return;
+    }
+    this.projectService.addTask(this.projectId(), columnId, trimmed);
+    this.cancelAddTask();
+  }
+ 
+  // ─── Delete Task ────────────────────────────────────────────────────
+  deleteTask(taskId: string): void {
+    this.projectService.deleteTask(this.projectId(), taskId);
+  }
+ 
+  // ─── Add Column ─────────────────────────────────────────────────────
+  onColumnAdded(name: string): void {
+    this.projectService.addColumn(this.projectId(), name);
+    this.showAddColumnModal.set(false);
+  }
+ 
+  // ─── Delete Column ──────────────────────────────────────────────────
+  deleteColumn(columnId: string): void {
+    this.projectService.deleteColumn(this.projectId(), columnId);
+  }
+}
