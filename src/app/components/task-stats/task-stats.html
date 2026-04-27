@@ -1,1 +1,11 @@
-<p>task-stats works!</p>
+@if (entries().length > 0) {
+  <div class="stats-panel">
+    <p class="stats-label">Time breakdown</p>
+    @for (entry of entries(); track entry.columnName) {
+      <div class="stats-row">
+        <span class="stats-col-name">{{ entry.columnName }}</span>
+        <span class="stats-time">{{ entry.formatted }}</span>
+      </div>
+    }
+  </div>
+}
